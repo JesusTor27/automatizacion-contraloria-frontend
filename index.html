@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gestión de Publicaciones | Contraloría</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Supabase Auth -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js" defer></script>
+
+    <!-- Aplicación -->
+    <script src="js/api.js?v=4" defer></script>
+    <script src="js/app.js?v=4" defer></script>
+</head>
+
+<body>
+
+    <!-- MENÚ LATERAL -->
+
+    <aside class="sidebar">
+        <h2>Contraloría de Sucre</h2>
+        <p>Gestión documental</p>
+
+        <nav>
+            <a href="index.html" class="active">
+                Panel de control
+            </a>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+
+    <main class="main">
+
+        <!-- ENCABEZADO -->
+
+        <header>
+            <div>
+                <h1>Panel de control</h1>
+                <p>Seguimiento de solicitudes de publicación</p>
+            </div>
+
+            <div class="acciones-header">
+
+                <button type="button" id="actualizar">
+                    Actualizar
+                </button>
+
+                <button type="button" id="exportar-reporte">
+                    Exportar reporte
+                </button>
+
+                <button type="button" id="cerrar-sesion">
+                    Cerrar sesión
+                </button>
+
+            </div>
+        </header>
+
+        <!-- ESTADÍSTICAS -->
+
+        <section class="estadisticas">
+
+            <article>
+                <span>Total solicitudes</span>
+                <strong id="total">0</strong>
+            </article>
+
+            <article>
+                <span>Por publicar</span>
+                <strong id="pendientes">0</strong>
+            </article>
+
+            <article>
+                <span>En revisión</span>
+                <strong id="revision">0</strong>
+            </article>
+
+            <article>
+                <span>Respondidas</span>
+                <strong id="respondidas">0</strong>
+            </article>
+
+        </section>
+
+        <!-- TABLA DE SOLICITUDES -->
+
+        <section class="panel">
+
+            <div class="encabezado-tabla">
+                <h2>Solicitudes registradas</h2>
+            </div>
+
+            <p id="mensaje" role="status">
+                Cargando solicitudes...
+            </p>
+
+            <p id="mensaje-reporte" role="status"></p>
+
+            <div class="tabla-contenedor">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Asunto</th>
+                            <th>Remitente</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabla-solicitudes"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

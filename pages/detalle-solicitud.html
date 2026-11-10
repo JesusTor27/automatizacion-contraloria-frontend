@@ -1,0 +1,410 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Detalle de solicitud | Contraloría</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <!-- Supabase Auth -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/auth.js" defer></script>
+
+    <!-- Aplicación -->
+    <script src="../js/api.js?v=4" defer></script>
+    <script src="../js/detalle-solicitud.js?v=4" defer></script>
+</head>
+
+<body>
+
+    <!-- MENÚ LATERAL -->
+
+    <aside class="sidebar">
+        <h2>Contraloría de Sucre</h2>
+        <p>Gestión documental</p>
+
+        <nav>
+            <a href="../index.html">
+                Panel de control
+            </a>
+
+            <a href="#" class="active">
+                Detalle de solicitud
+            </a>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+
+    <main class="main">
+
+        <!-- ENCABEZADO -->
+
+        <header>
+            <div>
+                <h1>Detalle de solicitud</h1>
+                <p>Consulta y validación de documentos</p>
+            </div>
+
+            <div class="acciones-header">
+                <a class="btn-detalle" href="../index.html">
+                    Volver al panel
+                </a>
+
+                <button type="button" id="cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </div>
+        </header>
+
+        <!-- INFORMACIÓN DE LA SOLICITUD -->
+
+        <section class="panel seccion-detalle">
+
+            <div class="encabezado-detalle">
+                <h2 id="asunto">Cargando solicitud...</h2>
+
+                <span id="estado" class="estado-etiqueta">
+                    -
+                </span>
+            </div>
+
+            <div class="datos-solicitud">
+
+                <div>
+                    <span>Remitente</span>
+                    <strong id="remitente">-</strong>
+                </div>
+
+                <div>
+                    <span>Fecha de recepción</span>
+                    <strong id="fecha">-</strong>
+                </div>
+
+                <div>
+                    <span>Código de publicación</span>
+                    <strong id="codigo">-</strong>
+                </div>
+
+                <div>
+                    <span>Identificador de solicitud</span>
+                    <strong id="solicitud-id">-</strong>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- DOCUMENTOS REGISTRADOS -->
+
+        <section class="panel seccion-detalle">
+
+            <h2>Documentos registrados</h2>
+
+            <p id="mensaje-documentos" role="status">
+                Consultando documentos...
+            </p>
+
+            <div id="lista-documentos" class="lista-documentos">
+            </div>
+
+        </section>
+
+        <!-- VALIDACIÓN -->
+
+        <section class="panel seccion-detalle">
+
+            <h2>Validación de solicitud</h2>
+
+            <p>
+                Comprueba que la solicitud tenga el documento
+                a publicar y el formato institucional correspondiente.
+            </p>
+
+            <button
+                type="button"
+                id="validar-documentos"
+                disabled
+            >
+                Validar documentos
+            </button>
+
+            <p id="resultado-validacion" role="status"></p>
+
+        </section>
+
+        <!-- REGISTRO DE PUBLICACIÓN -->
+
+        <section
+            class="panel seccion-detalle"
+            id="seccion-publicacion"
+            hidden
+        >
+
+            <h2>Registrar publicación</h2>
+
+            <p>
+                Después de publicar el documento en el portal
+                institucional, registra los datos y adjunta
+                una captura de pantalla.
+            </p>
+
+            <form
+                id="form-publicacion"
+                class="form-publicacion"
+            >
+
+                <div class="campo-formulario">
+                    <label for="fecha-publicacion">
+                        Fecha de publicación
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fecha-publicacion"
+                        required
+                    >
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="url-publicacion">
+                        URL de la publicación
+                    </label>
+
+                    <input
+                        type="url"
+                        id="url-publicacion"
+                        placeholder="https://..."
+                        pattern="https://.+"
+                        required
+                    >
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="responsable-publicacion">
+                        Responsable de la publicación
+                    </label>
+
+                    <input
+                        type="text"
+                        id="responsable-publicacion"
+                        placeholder="Nombre del responsable"
+                        maxlength="150"
+                        required
+                    >
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="captura-publicacion">
+                        Captura de pantalla
+                    </label>
+
+                    <input
+                        type="file"
+                        id="captura-publicacion"
+                        accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+                        required
+                    >
+
+                    <small>
+                        Formatos permitidos: PNG o JPG.
+                        Tamaño máximo: 10 MB.
+                    </small>
+                </div>
+
+                <button
+                    type="submit"
+                    id="btn-registrar-publicacion"
+                >
+                    Registrar publicación
+                </button>
+
+                <p id="resultado-publicacion" role="status"></p>
+
+            </form>
+        </section>
+
+        <!-- GENERACIÓN DE EVIDENCIAS -->
+
+        <section
+            class="panel seccion-detalle"
+            id="seccion-evidencia"
+            hidden
+        >
+
+            <h2>Generación de evidencia</h2>
+
+            <p>
+                La publicación ya fue registrada.
+                Puedes generar automáticamente los documentos
+                de evidencia en formato Word y PDF.
+            </p>
+
+            <button
+                type="button"
+                id="btn-generar-evidencia"
+            >
+                Generar evidencia DOCX/PDF
+            </button>
+
+            <p id="resultado-evidencia" role="status"></p>
+
+        </section>
+
+        <!-- REVISIÓN DE EVIDENCIAS -->
+
+        <section
+            class="panel seccion-detalle"
+            id="seccion-revision"
+            hidden
+        >
+
+            <h2>Revisión de evidencia</h2>
+
+            <p>
+                Revisa los documentos de evidencia antes de
+                aprobarlos o registrar una observación.
+                Puedes abrir el PDF desde la lista de documentos.
+            </p>
+
+            <div class="campo-formulario">
+
+                <label for="observaciones-revision">
+                    Observaciones
+                </label>
+
+                <textarea
+                    id="observaciones-revision"
+                    rows="4"
+                    maxlength="2000"
+                    placeholder="Describe los errores encontrados o los cambios necesarios..."
+                ></textarea>
+
+                <small>
+                    Este campo es obligatorio para rechazar una evidencia.
+                </small>
+            </div>
+
+            <div class="acciones-revision">
+
+                <button
+                    type="button"
+                    id="btn-aprobar-evidencia"
+                >
+                    Aprobar evidencia
+                </button>
+
+                <button
+                    type="button"
+                    id="btn-observar-evidencia"
+                >
+                    Rechazar evidencia
+                </button>
+
+            </div>
+
+            <p id="resultado-revision" role="status"></p>
+
+        </section>
+
+        <!-- CORRECCIÓN DE PUBLICACIÓN RECHAZADA -->
+
+        <section
+            class="panel seccion-detalle"
+            id="seccion-correccion"
+            hidden
+        >
+
+            <h2>Corregir publicación rechazada</h2>
+
+            <p>
+                Esta evidencia fue rechazada.
+                Corrige la información indicada y adjunta
+                una nueva captura de pantalla.
+            </p>
+
+            <form
+                id="form-correccion"
+                class="form-publicacion"
+            >
+
+                <div class="campo-formulario">
+                    <label for="correccion-fecha">
+                        Fecha de publicación
+                    </label>
+
+                    <input
+                        type="date"
+                        id="correccion-fecha"
+                        required
+                    >
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="correccion-url">
+                        URL de publicación
+                    </label>
+
+                    <input
+                        type="url"
+                        id="correccion-url"
+                        placeholder="https://..."
+                        required
+                    >
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="correccion-responsable">
+                        Responsable
+                    </label>
+
+                    <input
+                        type="text"
+                        id="correccion-responsable"
+                        maxlength="150"
+                        required
+                    >
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="correccion-captura">
+                        Nueva captura de pantalla
+                    </label>
+
+                    <input
+                        type="file"
+                        id="correccion-captura"
+                        accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+                        required
+                    >
+
+                    <small>
+                        PNG o JPG. Máximo 10 MB.
+                        La captura anterior se conservará.
+                    </small>
+                </div>
+
+                <button
+                    type="submit"
+                    id="btn-guardar-correccion"
+                >
+                    Guardar correcciones
+                </button>
+
+                <p id="resultado-correccion" role="status"></p>
+
+            </form>
+        </section>
+
+        <!-- ERRORES GENERALES -->
+
+        <p id="error-general" role="alert"></p>
+
+    </main>
+
+</body>
+
+</html>
